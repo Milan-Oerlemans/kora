@@ -1,12 +1,26 @@
 version: '3.8'
 
 services:
-  app:
+  kora-app:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    volumes:
+      - ./kora.toml:/usr/src/app/kora.toml
+      - ./devnet.json:/usr/src/app/devnet.json
     ports:
-      - "3030:3030"
-    environment:
-      - RUST_LOG=info
+      - '3030:3030'
     restart: unless-stopped
+
+    command:
+      - 'json_rpc_server'
+      - '--config'
+      - '/usr/src/app/kora.toml'
+      - '--rpc-url'
+      - '${RPC_URL}'
+      - '--port'
+      - '3030'
+      - '--private-key'
+      - 'rBqXtKX833FsL5xeDyMrBS9wC6oAxWdN6QYAygmev8g1wa9kPN4RpQK9kMQPPJd5LRrV5eYJbHNh7j4BrgvEuwR'
